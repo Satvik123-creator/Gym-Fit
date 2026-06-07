@@ -1,0 +1,969 @@
+{
+  "info": {
+    "name": "Gym Management API",
+    "description": "Complete Postman collection for the Gym Management System API. Includes endpoints for authentication, trainers, membership plans, gallery, testimonials, transformations, enquiries, trial bookings, gym info, and health checks.\n\n## Authentication\n\nMost endpoints require authentication. After logging in via the **Login** endpoint, copy the returned `accessToken` and set it as the `accessToken` collection variable. Protected routes will automatically use this token via the collection-level Bearer auth.\n\n## Variables\n\n| Variable | Initial Value | Description |\n|----------|--------------|-------------|\n| baseUrl | http://localhost:5000/api | API base URL |\n| accessToken | (empty) | JWT access token for authenticated requests |",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "gym-fit"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints - login and token refresh. These endpoints do not require authentication.",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@gym.com\",\n  \"password\": \"Admin@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate with admin credentials. On success, returns an access token and a refresh token. Set the access token as the `accessToken` collection variable for subsequent authenticated requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"your-refresh-token-here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Obtain a new access token by providing a valid refresh token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Trainers",
+      "description": "CRUD operations for gym trainers. Create and update use multipart/form-data to support image upload.",
+      "item": [
+        {
+          "name": "Get All Trainers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trainers",
+              "host": ["{{baseUrl}}"],
+              "path": ["trainers"]
+            },
+            "description": "Retrieve a list of all trainers."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Trainer By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trainers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trainers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "trainer-id",
+                  "description": "MongoDB ObjectId of the trainer"
+                }
+              ]
+            },
+            "description": "Retrieve a single trainer by their ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Trainer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "designation",
+                  "value": "Head Coach",
+                  "type": "text"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Strength Training, Cardio",
+                  "type": "text"
+                },
+                {
+                  "key": "experience",
+                  "value": "8 years",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Certified personal trainer with expertise in strength and conditioning.",
+                  "type": "text"
+                },
+                {
+                  "key": "socialLinks",
+                  "value": "{\"instagram\":\"https://instagram.com/johndoe\",\"twitter\":\"https://twitter.com/johndoe\"}",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trainers",
+              "host": ["{{baseUrl}}"],
+              "path": ["trainers"]
+            },
+            "description": "Create a new trainer. Supports image file upload via form-data."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Trainer",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "John Doe Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "designation",
+                  "value": "Senior Head Coach",
+                  "type": "text"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Strength Training, Cardio, Yoga",
+                  "type": "text"
+                },
+                {
+                  "key": "experience",
+                  "value": "10 years",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description for the trainer.",
+                  "type": "text"
+                },
+                {
+                  "key": "socialLinks",
+                  "value": "{\"instagram\":\"https://instagram.com/johndoe\",\"twitter\":\"https://twitter.com/johndoe\",\"facebook\":\"https://facebook.com/johndoe\"}",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trainers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trainers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "trainer-id",
+                  "description": "MongoDB ObjectId of the trainer to update"
+                }
+              ]
+            },
+            "description": "Update an existing trainer's information. Supports optional image file replacement."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Trainer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trainers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trainers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "trainer-id",
+                  "description": "MongoDB ObjectId of the trainer to delete"
+                }
+              ]
+            },
+            "description": "Permanently delete a trainer."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Membership Plans",
+      "description": "CRUD operations for membership plans. Create and update accept raw JSON payloads.",
+      "item": [
+        {
+          "name": "Get All Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["plans"]
+            },
+            "description": "Retrieve all membership plans."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Premium Monthly\",\n  \"duration\": \"1 month\",\n  \"price\": 1999,\n  \"features\": [\n    \"Unlimited gym access\",\n    \"Personal trainer sessions (4/month)\",\n    \"Diet consultation\",\n    \"Free WiFi\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["plans"]
+            },
+            "description": "Create a new membership plan with title, duration, price, and features array."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Plan",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Premium Monthly\",\n  \"duration\": \"1 month\",\n  \"price\": 2499,\n  \"features\": [\n    \"Unlimited gym access\",\n    \"Personal trainer sessions (8/month)\",\n    \"Diet consultation\",\n    \"Free WiFi\",\n    \"Sauna access\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/plans/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["plans", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "plan-id",
+                  "description": "MongoDB ObjectId of the plan to update"
+                }
+              ]
+            },
+            "description": "Update an existing membership plan."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/plans/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["plans", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "plan-id",
+                  "description": "MongoDB ObjectId of the plan to delete"
+                }
+              ]
+            },
+            "description": "Permanently delete a membership plan."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gallery",
+      "description": "Gallery image management. Supports file uploads for images and category tagging.",
+      "item": [
+        {
+          "name": "Get Gallery Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/gallery?category=gym",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "gym",
+                  "description": "Filter by category (e.g. gym, classes, events)"
+                }
+              ]
+            },
+            "description": "Retrieve gallery images, optionally filtered by category."
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Gallery Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "title",
+                  "value": "Gym Floor",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "gym",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gallery",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery"]
+            },
+            "description": "Upload a new image to the gallery with a title and category."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Gallery Image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/gallery/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "gallery-id",
+                  "description": "MongoDB ObjectId of the gallery image to delete"
+                }
+              ]
+            },
+            "description": "Delete a gallery image."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Testimonials",
+      "description": "Manage member testimonials and reviews. Supports optional member photo uploads.",
+      "item": [
+        {
+          "name": "Get All Testimonials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials",
+              "host": ["{{baseUrl}}"],
+              "path": ["testimonials"]
+            },
+            "description": "Retrieve all member testimonials."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Testimonial",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "memberImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "memberName",
+                  "value": "Jane Smith",
+                  "type": "text"
+                },
+                {
+                  "key": "review",
+                  "value": "This gym has transformed my life! The trainers are incredibly supportive and the facilities are top-notch.",
+                  "type": "text"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/testimonials",
+              "host": ["{{baseUrl}}"],
+              "path": ["testimonials"]
+            },
+            "description": "Create a new testimonial with member details, review text, and optional member photo."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Testimonial",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "memberImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "memberName",
+                  "value": "Jane Smith",
+                  "type": "text"
+                },
+                {
+                  "key": "review",
+                  "value": "Updated review text for this testimonial.",
+                  "type": "text"
+                },
+                {
+                  "key": "rating",
+                  "value": "4",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/testimonials/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["testimonials", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "testimonial-id",
+                  "description": "MongoDB ObjectId of the testimonial to update"
+                }
+              ]
+            },
+            "description": "Update an existing testimonial."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Testimonial",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["testimonials", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "testimonial-id",
+                  "description": "MongoDB ObjectId of the testimonial to delete"
+                }
+              ]
+            },
+            "description": "Delete a testimonial."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transformations",
+      "description": "Before/after transformation stories. Supports uploading two images - before and after.",
+      "item": [
+        {
+          "name": "Get All Transformations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transformations",
+              "host": ["{{baseUrl}}"],
+              "path": ["transformations"]
+            },
+            "description": "Retrieve all transformation stories."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Transformation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "beforeImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "afterImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "memberName",
+                  "value": "Mike Johnson",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Lost 20 kg in 6 months with dedicated training and nutrition planning.",
+                  "type": "text"
+                },
+                {
+                  "key": "duration",
+                  "value": "6 months",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transformations",
+              "host": ["{{baseUrl}}"],
+              "path": ["transformations"]
+            },
+            "description": "Create a new transformation story with before and after images."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Transformation",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "beforeImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "afterImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "memberName",
+                  "value": "Mike Johnson",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated transformation description.",
+                  "type": "text"
+                },
+                {
+                  "key": "duration",
+                  "value": "8 months",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transformations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["transformations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "transformation-id",
+                  "description": "MongoDB ObjectId of the transformation to update"
+                }
+              ]
+            },
+            "description": "Update an existing transformation story."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Transformation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transformations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["transformations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "transformation-id",
+                  "description": "MongoDB ObjectId of the transformation to delete"
+                }
+              ]
+            },
+            "description": "Delete a transformation story."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Enquiries",
+      "description": "Public enquiry submission and admin management. The POST endpoint is public; GET and status updates require authentication.",
+      "item": [
+        {
+          "name": "Submit Enquiry",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Visitor\",\n  \"email\": \"visitor@example.com\",\n  \"phone\": \"9876543210\",\n  \"message\": \"I would like to know more about your premium membership plans.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enquiry",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiry"]
+            },
+            "description": "Public endpoint for submitting a gym enquiry. No authentication required."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Enquiries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/enquiry",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiry"]
+            },
+            "description": "Admin endpoint - retrieve all submitted enquiries."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Enquiry Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"resolved\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enquiry/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiry", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "enquiry-id",
+                  "description": "MongoDB ObjectId of the enquiry to update"
+                }
+              ]
+            },
+            "description": "Admin endpoint - update the status of an enquiry (e.g. 'resolved', 'pending', 'contacted')."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Trial Bookings",
+      "description": "Public trial session booking and admin management. The POST endpoint is public; GET and status updates require authentication.",
+      "item": [
+        {
+          "name": "Create Trial Booking",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah Williams\",\n  \"phone\": \"9876543210\",\n  \"email\": \"sarah@example.com\",\n  \"preferredDate\": \"2026-06-15\",\n  \"preferredTime\": \"10:00 AM\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trial-booking",
+              "host": ["{{baseUrl}}"],
+              "path": ["trial-booking"]
+            },
+            "description": "Public endpoint for booking a free trial session. No authentication required."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Trial Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trial-booking",
+              "host": ["{{baseUrl}}"],
+              "path": ["trial-booking"]
+            },
+            "description": "Admin endpoint - retrieve all trial booking requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Trial Booking Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trial-booking/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["trial-booking", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking-id",
+                  "description": "MongoDB ObjectId of the trial booking to update"
+                }
+              ]
+            },
+            "description": "Admin endpoint - update the status of a trial booking (e.g. 'confirmed', 'cancelled', 'pending')."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gym Info",
+      "description": "Manage gym information and settings. The GET endpoint is public; PUT requires authentication.",
+      "item": [
+        {
+          "name": "Get Gym Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/gym-info",
+              "host": ["{{baseUrl}}"],
+              "path": ["gym-info"]
+            },
+            "description": "Retrieve gym information and configuration settings."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Gym Info",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "heroImage",
+                  "value": "",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "gymName",
+                  "value": "FitZone Gym",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "123 Fitness Street, Downtown, City - 400001",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "+91-9876543210",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "contact@fitzone.com",
+                  "type": "text"
+                },
+                {
+                  "key": "openingHours",
+                  "value": "{\"monday\":\"6:00 AM - 10:00 PM\",\"tuesday\":\"6:00 AM - 10:00 PM\",\"wednesday\":\"6:00 AM - 10:00 PM\",\"thursday\":\"6:00 AM - 10:00 PM\",\"friday\":\"6:00 AM - 10:00 PM\",\"saturday\":\"8:00 AM - 8:00 PM\",\"sunday\":\"8:00 AM - 6:00 PM\"}",
+                  "type": "text"
+                },
+                {
+                  "key": "googleMapLink",
+                  "value": "https://maps.google.com/?q=123+Fitness+Street",
+                  "type": "text"
+                },
+                {
+                  "key": "whatsappNumber",
+                  "value": "+919876543210",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gym-info",
+              "host": ["{{baseUrl}}"],
+              "path": ["gym-info"]
+            },
+            "description": "Update gym information. Supports optional hero image upload. The openingHours field should be a JSON string."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "description": "Health check endpoint to verify API availability.",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API server is running and healthy."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
