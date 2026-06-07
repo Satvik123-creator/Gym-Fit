@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
 import { IoMdFitness } from 'react-icons/io';
+import { IoMdFitness } from 'react-icons/io';
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
